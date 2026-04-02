@@ -4,19 +4,16 @@ Page({
   data: {
     messages: [],
     inputText: '',
-    isConnected: false
+    connected: false
   },
 
   onShow: function() {
-    this.setData({
-      isConnected: ble.isConnected
-    });
-    
-    // 加载全局消息
-    var app = getApp();
-    if (app.globalData.messages.length !== this.data.messages.length) {
-      this.setData({ messages: app.globalData.messages });
-    }
+    this.setData({ connected: ble.connected });
+    this._loadMessages();
+  },
+
+  _loadMessages: function() {
+    this.setData({ messages: getApp().globalData.messages.slice() });
   },
 
   onInput: function(e) {
@@ -28,7 +25,7 @@ Page({
       wx.showToast({ title: '请输入消息', icon: 'none' });
       return;
     }
-    if (!this.data.isConnected) {
+    if (!this.data.connected) {
       wx.showToast({ title: '请先连接设备', icon: 'none' });
       return;
     }
@@ -36,28 +33,24 @@ Page({
     var text = this.data.inputText.trim();
     var that = this;
 
-    // 发送消息到设备
-    ble.sendText(text, function(result) {
-      var msg = {
-        id: Date.now(),
-        type: 'sent',
-        text: text,
-        time: new Date().toLocaleTimeString()
-      };
+    // 添加到界面
+    var msg = {
+      id: Date.now(),
+      type: 'sent',
+      text: text,
+      time: new Date().toLocaleTimeString()
+    };
+    this.setData({
+      messages: this.data.messages.concat(msg),
+      inputText: ''
+    });
+    getApp().globalData.messages.push(msg);
 
-      // 添加到列表
-      that.setData({
-        messages: that.data.messages.concat(msg),
-        inputText: ''
-      });
-
-      // 保存到全局
-      getApp().globalData.messages.push(msg);
-
-      if (result.success) {
-        wx.showToast({ title: '已发送', icon: 'success' });
-      } else {
+    // 通过 BLE 发送
+    ble.sendText(text, function(success, err) {
+      if (!success) {
         wx.showToast({ title: '发送失败', icon: 'none' });
+        console.error('[MSG] 发送失败:', err);
       }
     });
   }
