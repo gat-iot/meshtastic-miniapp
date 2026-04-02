@@ -21,5 +21,10 @@
       { "pagePath": "pages/settings/settings", "text": "设置" }
     ]
   },
+  "permission": {
+    "scope.bluetooth": {
+      "desc": "用于连接 Meshtastic 设备"
+    }
+  },
   "style": "v2"
 }
