@@ -1,10 +1,5 @@
 <view style="padding: 20rpx; background: #f5f5f5; min-height: 100vh;">
-  <!-- 错误提示 -->
-  <view wx:if="{{error}}" style="background: #ffebee; color: #c62828; padding: 24rpx; border-radius: 16rpx; margin-bottom: 20rpx;">
-    <text>{{error}}</text>
-  </view>
-
-  <!-- 已连接设备 -->
+  <!-- 已连接 -->
   <view wx:if="{{connected}}" style="background: linear-gradient(135deg, #2196F3, #1976D2); color: #fff; border-radius: 16rpx; padding: 30rpx; margin-bottom: 20rpx;">
     <view style="display: flex; align-items: center;">
       <view style="width: 80rpx; height: 80rpx; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 20rpx;">
@@ -21,52 +16,40 @@
   </view>
 
   <!-- 未连接 -->
-  <view wx:if="{{!connected && !scanning && devices.length === 0}}" style="text-align: center; padding: 80rpx 40rpx;">
-    <text style="font-size: 80rpx; display: block; margin-bottom: 30rpx;">📡</text>
-    <text style="font-size: 30rpx; color: #333; display: block; margin-bottom: 10rpx;">未连接设备</text>
-    <text style="font-size: 26rpx; color: #999; display: block; margin-bottom: 50rpx;">点击下方按钮扫描</text>
+  <view wx:if="{{!connected && !scanning && devices.length === 0}}" style="text-align: center; padding: 60rpx 40rpx;">
+    <text style="font-size: 60rpx; display: block; margin-bottom: 20rpx;">📡</text>
+    <text style="font-size: 30rpx; color: #333; display: block; margin-bottom: 40rpx;">未连接设备</text>
     <button bindtap="scanDevices" style="background: #2196F3; color: #fff; border: none; border-radius: 12rpx; padding: 24rpx 60rpx; font-size: 30rpx;">
       扫描设备
     </button>
   </view>
 
   <!-- 扫描中 -->
-  <view wx:if="{{scanning}}" style="text-align: center; padding: 80rpx 40rpx;">
-    <text style="font-size: 80rpx; display: block; margin-bottom: 30rpx;">🔍</text>
-    <text style="font-size: 30rpx; color: #2196F3; display: block;">正在扫描...</text>
-    <text style="font-size: 26rpx; color: #999; margin-top: 10rpx; display: block;">请确保设备已开机</text>
-    <text style="font-size: 24rpx; color: #ccc; margin-top: 10rpx; display: block;">(约 8 秒)</text>
+  <view wx:if="{{scanning}}" style="text-align: center; padding: 60rpx 40rpx;">
+    <text style="font-size: 60rpx; display: block; margin-bottom: 20rpx;">🔍</text>
+    <text style="font-size: 30rpx; color: #2196F3; display: block;">扫描中... (8秒)</text>
   </view>
 
   <!-- 设备列表 -->
   <view wx:if="{{devices.length > 0}}" style="margin-top: 20rpx;">
-    <view style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16rpx;">
-      <text style="font-size: 28rpx; color: #666;">发现 {{devices.length}} 个设备</text>
-      <text bindtap="scanDevices" style="font-size: 26rpx; color: #2196F3; padding: 10rpx;">刷新</text>
-    </view>
+    <text style="font-size: 28rpx; color: #666; display: block; margin-bottom: 16rpx;">发现 {{devices.length}} 个设备</text>
     <view style="background: #fff; border-radius: 16rpx; overflow: hidden;">
       <view wx:for="{{devices}}" wx:key="deviceId"
             style="padding: 28rpx 24rpx; border-bottom: 1rpx solid #f0f0f0; display: flex; align-items: center;"
             data-id="{{item.deviceId}}"
             bindtap="connectDevice">
-        <view style="width: 64rpx; height: 64rpx; background: #e3f2fd; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 20rpx;">
-          <text style="font-size: 32rpx;">📱</text>
-        </view>
         <view style="flex: 1;">
           <text style="font-size: 30rpx; font-weight: 500; color: #333; display: block;">{{item.name || item.localName || '未知设备'}}</text>
-          <text style="font-size: 24rpx; color: #999; margin-top: 6rpx; display: block;">信号: {{item.RSSI}} dBm</text>
+          <text style="font-size: 24rpx; color: #999; margin-top: 6rpx; display: block;">RSSI: {{item.RSSI}} dBm</text>
         </view>
-        <text style="font-size: 26rpx; color: #2196F3; padding: 12rpx 24rpx; background: #e3f2fd; border-radius: 8rpx;">连接</text>
+        <text style="font-size: 26rpx; color: #2196F3; padding: 10rpx 24rpx; background: #e3f2fd; border-radius: 8rpx;">连接</text>
       </view>
     </view>
   </view>
 
-  <!-- 使用说明 -->
-  <view wx:if="{{!connected}}" style="background: #fff; border-radius: 16rpx; padding: 24rpx; margin-top: 20rpx;">
-    <text style="font-size: 28rpx; font-weight: bold; color: #333; display: block; margin-bottom: 16rpx;">使用说明</text>
-    <text style="font-size: 26rpx; color: #666; display: block; line-height: 1.8;">1. 开启手机蓝牙</text>
-    <text style="font-size: 26rpx; color: #666; display: block; line-height: 1.8;">2. 确保 Meshtastic 设备已开机</text>
-    <text style="font-size: 26rpx; color: #666; display: block; line-height: 1.8;">3. 点击扫描设备</text>
-    <text style="font-size: 26rpx; color: #666; display: block; line-height: 1.8;">4. 在列表中点击设备连接</text>
+  <!-- 调试日志 -->
+  <view wx:if="{{debugLog}}" style="background: #1e1e1e; border-radius: 16rpx; padding: 24rpx; margin-top: 20rpx;">
+    <text style="font-size: 24rpx; color: #4ec9b0; display: block; margin-bottom: 12rpx;">连接日志</text>
+    <text style="font-size: 22rpx; color: #d4d4d4; font-family: monospace; white-space: pre-wrap;">{{debugLog}}</text>
   </view>
 </view>
