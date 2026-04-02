@@ -1,6 +1,5 @@
 {
   "pages": [
-    "pages/index/index",
     "pages/messages/messages",
     "pages/devices/devices",
     "pages/channels/channels",
@@ -20,11 +19,6 @@
       { "pagePath": "pages/channels/channels", "text": "频道" },
       { "pagePath": "pages/settings/settings", "text": "设置" }
     ]
-  },
-  "permission": {
-    "scope.bluetooth": {
-      "desc": "用于连接 Meshtastic 设备"
-    }
   },
   "style": "v2"
 }
