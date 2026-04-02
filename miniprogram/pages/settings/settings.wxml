@@ -1,0 +1,104 @@
+<!--pages/settings/settings.wxml-->
+<view class="container">
+  <!-- 设备信息 -->
+  <view class="section" wx:if="{{connected}}">
+    <text class="section-title">设备</text>
+    <view class="card device-card">
+      <view class="device-info">
+        <text class="device-name">{{deviceName}}</text>
+        <text class="device-status">已连接</text>
+      </view>
+      <button class="btn-danger" bindtap="disconnectDevice">断开连接</button>
+    </view>
+  </view>
+
+  <!-- 节点设置 -->
+  <view class="section" wx:if="{{connected}}">
+    <text class="section-title">节点设置</text>
+    
+    <view class="setting-list">
+      <view class="setting-item">
+        <text class="setting-label">路由模式</text>
+        <switch 
+          checked="{{settings.nodeInfo.isRouter}}" 
+          data-key="nodeInfo.isRouter"
+          bindchange="toggleSetting"
+          color="#2196F3"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 电源设置 -->
+  <view class="section" wx:if="{{connected}}">
+    <text class="section-title">电源</text>
+    
+    <view class="setting-list">
+      <view class="setting-item">
+        <text class="setting-label">省电模式</text>
+        <switch 
+          checked="{{settings.power.isPowerSaving}}" 
+          data-key="power.isPowerSaving"
+          bindchange="toggleSetting"
+          color="#2196F3"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 位置设置 -->
+  <view class="section" wx:if="{{connected}}">
+    <text class="section-title">位置</text>
+    
+    <view class="setting-list">
+      <view class="setting-item">
+        <text class="setting-label">GPS 定位</text>
+        <switch 
+          checked="{{settings.position.gpsEnabled}}" 
+          data-key="position.gpsEnabled"
+          bindchange="toggleSetting"
+          color="#2196F3"
+        />
+      </view>
+      
+      <view class="setting-item">
+        <text class="setting-label">智能位置</text>
+        <switch 
+          checked="{{settings.position.smartPosition}}" 
+          data-key="position.smartPosition"
+          bindchange="toggleSetting"
+          color="#2196F3"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据管理 -->
+  <view class="section">
+    <text class="section-title">数据</text>
+    
+    <view class="setting-list">
+      <view class="setting-item clickable" bindtap="clearMessages">
+        <text class="setting-label">清除消息记录</text>
+        <text class="setting-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 其他 -->
+  <view class="section">
+    <text class="section-title">其他</text>
+    
+    <view class="setting-list">
+      <view class="setting-item clickable" bindtap="showAbout">
+        <text class="setting-label">关于</text>
+        <text class="setting-arrow">›</text>
+      </view>
+      
+      <view class="setting-item clickable" bindtap="sendFeedback">
+        <text class="setting-label">问题反馈</text>
+        <text class="setting-arrow">›</text>
+      </view>
+    </view>
+  </view>
+</view>
