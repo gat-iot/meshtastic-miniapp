@@ -1,12 +1,26 @@
-<view class="container">
-  <text style="font-size: 28rpx; color: #666;">频道配置</text>
-  <view style="background: #fff; border-radius: 16rpx; margin-top: 20rpx;">
-    <view wx:for="{{channels}}" wx:key="index" style="padding: 24rpx; border-bottom: 1rpx solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
-      <view>
-        <text style="font-size: 32rpx; font-weight: 500;">CH{{item.index}}: {{item.name}}</text>
-        <text style="font-size: 24rpx; color: #999; margin-top: 8rpx;">{{item.enabled ? '已启用' : '未启用'}}</text>
+<view style="padding: 20rpx; background: #f5f5f5; min-height: 100vh;">
+  <text style="font-size: 28rpx; color: #666; display: block; margin-bottom: 20rpx;">频道配置</text>
+
+  <view style="background: #fff; border-radius: 16rpx; overflow: hidden;">
+    <view wx:for="{{channels}}" wx:key="index" 
+          style="padding: 24rpx; border-bottom: 1rpx solid #f0f0f0; display: flex; align-items: center; justify-content: space-between;"
+          data-index="{{index}}"
+          bindtap="editChannel">
+      <view style="flex: 1;">
+        <text style="font-size: 32rpx; font-weight: 500; color: #333; display: block;">CH{{item.index}}: {{item.name}}</text>
+        <text style="font-size: 24rpx; color: #999; margin-top: 8rpx; display: block;">{{item.desc}}</text>
+        <text style="font-size: 24rpx; color: {{item.enabled ? '#4caf50' : '#999'}}; margin-top: 8rpx; display: block;">{{item.enabled ? '已启用' : '未启用'}}</text>
       </view>
       <switch checked="{{item.enabled}}" data-index="{{index}}" bindchange="toggleChannel" color="#2196F3"/>
     </view>
+  </view>
+
+  <!-- 说明 -->
+  <view style="background: #fff; border-radius: 16rpx; padding: 24rpx; margin-top: 20rpx;">
+    <text style="font-size: 30rpx; font-weight: bold; color: #333; display: block; margin-bottom: 16rpx;">频道说明</text>
+    <text style="font-size: 26rpx; color: #666; display: block; line-height: 2;">• LongFast: 远距离、低速率，适合户外</text>
+    <text style="font-size: 26rpx; color: #666; display: block; line-height: 2;">• MediumFast: 中等距离和速率</text>
+    <text style="font-size: 26rpx; color: #666; display: block; line-height: 2;">• ShortTurbo: 短距离、高速率</text>
+    <text style="font-size: 26rpx; color: #666; display: block; line-height: 2;">• 只有启用相同频道的设备才能通信</text>
   </view>
 </view>
