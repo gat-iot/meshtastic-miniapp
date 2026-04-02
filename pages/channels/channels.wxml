@@ -1,0 +1,12 @@
+<view class="container">
+  <text style="font-size: 28rpx; color: #666;">频道配置</text>
+  <view style="background: #fff; border-radius: 16rpx; margin-top: 20rpx;">
+    <view wx:for="{{channels}}" wx:key="index" style="padding: 24rpx; border-bottom: 1rpx solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+      <view>
+        <text style="font-size: 32rpx; font-weight: 500;">CH{{item.index}}: {{item.name}}</text>
+        <text style="font-size: 24rpx; color: #999; margin-top: 8rpx;">{{item.enabled ? '已启用' : '未启用'}}</text>
+      </view>
+      <switch checked="{{item.enabled}}" data-index="{{index}}" bindchange="toggleChannel" color="#2196F3"/>
+    </view>
+  </view>
+</view>
