@@ -4,53 +4,56 @@ Page({
   data: {
     scanning: false,
     devices: [],
-    connectedDevice: null,
-    isConnected: false,
-    error: null
+    connected: false,
+    deviceName: '',
+    error: ''
   },
 
   onShow: function() {
-    var app = getApp();
     this.setData({
-      connectedDevice: app.globalData.connectedDevice,
-      isConnected: ble.isConnected
+      connected: ble.connected,
+      deviceName: ble.nodeName || ''
     });
   },
 
   scanDevices: function() {
     var that = this;
-    that.setData({ scanning: true, error: null, devices: [] });
-    
+    that.setData({ scanning: true, error: '', devices: [] });
+
     wx.openBluetoothAdapter({
       success: function() {
         wx.startBluetoothDevicesDiscovery({
           allowDuplicatesKey: false,
           success: function() {
-            wx.showToast({ title: '扫描中...', icon: 'none', duration: 2000 });
-            
+            wx.showToast({ title: '扫描中...', icon: 'none' });
+
             setTimeout(function() {
               wx.getBluetoothDevices({
                 success: function(res) {
-                  console.log('发现设备:', res.devices);
-                  that.setData({ devices: res.devices, scanning: false });
-                  wx.stopBluetoothDevicesDiscovery({});
+                  console.log('[SCAN] 发现设备:', res.devices.length);
+                  that.setData({
+                    devices: res.devices,
+                    scanning: false
+                  });
+                  wx.stopBluetoothDevicesDiscovery();
                 },
                 fail: function() {
-                  that.setData({ scanning: false });
+                  that.setData({ scanning: false, error: '获取设备列表失败' });
+                  wx.stopBluetoothDevicesDiscovery();
                 }
               });
             }, 8000);
           },
           fail: function() {
-            that.setData({ scanning: false });
+            that.setData({ scanning: false, error: '扫描启动失败' });
           }
         });
       },
-      fail: function() {
+      fail: function(err) {
         that.setData({ scanning: false });
         wx.showModal({
           title: '蓝牙错误',
-          content: '请确保手机蓝牙已开启',
+          content: '请开启手机蓝牙后重试',
           showCancel: false
         });
       }
@@ -61,39 +64,20 @@ Page({
     var that = this;
     var deviceId = e.currentTarget.dataset.id;
     var device = this.data.devices.find(function(d) { return d.deviceId === deviceId; });
-    
-    // 使用 ble 模块连接
-    ble.connect(deviceId, function(result) {
-      if (result.success) {
-        console.log('连接成功，启用监听');
-        
-        // 启用数据监听
-        ble.startListen();
-        ble.onMessage = function(msg) {
-          console.log('收到设备消息:', msg);
-          // 保存到全局消息
-          var app = getApp();
-          app.globalData.messages.push({
-            id: Date.now(),
-            type: 'received',
-            text: '收到数据: ' + msg.data,
-            time: new Date().toLocaleTimeString()
-          });
-        };
-        
-        // 保存到全局
-        var app = getApp();
-        app.globalData.deviceId = deviceId;
-        app.globalData.connectedDevice = device;
-        
+
+    wx.stopBluetoothDevicesDiscovery();
+
+    ble.connect(deviceId, function(success, err) {
+      if (success) {
+        ble.nodeName = device.name || device.localName || 'Meshtastic';
         that.setData({
-          connectedDevice: device,
-          isConnected: true,
+          connected: true,
+          deviceName: ble.nodeName,
           devices: []
         });
-        
-        wx.showToast({ title: '连接成功', icon: 'success' });
+        wx.showToast({ title: '已连接', icon: 'success' });
       } else {
+        that.setData({ error: err || '连接失败' });
         wx.showToast({ title: '连接失败', icon: 'none' });
       }
     });
@@ -103,15 +87,13 @@ Page({
     var that = this;
     wx.showModal({
       title: '断开连接',
-      content: '确定断开设备？',
+      content: '确定断开？',
       success: function(res) {
         if (res.confirm) {
-          ble.disconnect();
-          var app = getApp();
-          app.globalData.deviceId = null;
-          app.globalData.connectedDevice = null;
-          that.setData({ connectedDevice: null, isConnected: false });
-          wx.showToast({ title: '已断开', icon: 'success' });
+          ble.disconnect(function() {
+            that.setData({ connected: false, deviceName: '' });
+            wx.showToast({ title: '已断开', icon: 'success' });
+          });
         }
       }
     });
