@@ -1,0 +1,12 @@
+<view class="container">
+  <view wx:if="{{connected}}" class="card">
+    <text style="font-size: 32rpx; font-weight: bold;">{{deviceName}}</text>
+    <text style="font-size: 24rpx; color: #4caf50;">已连接</text>
+    <button class="btn-danger" style="margin-top: 20rpx;" bindtap="disconnect">断开连接</button>
+  </view>
+  <view class="card" style="margin-top: 20rpx;">
+    <view style="padding: 24rpx; border-bottom: 1rpx solid #f0f0f0;" bindtap="showAbout">
+      <text style="font-size: 30rpx;">关于</text>
+    </view>
+  </view>
+</view>
