@@ -13,7 +13,8 @@ Page({
   },
 
   _loadMessages: function() {
-    this.setData({ messages: getApp().globalData.messages.slice() });
+    var app = getApp();
+    this.setData({ messages: app.globalData.messages.slice() });
   },
 
   onInput: function(e) {
@@ -33,7 +34,6 @@ Page({
     var text = this.data.inputText.trim();
     var that = this;
 
-    // 添加到界面
     var msg = {
       id: Date.now(),
       type: 'sent',
@@ -46,11 +46,9 @@ Page({
     });
     getApp().globalData.messages.push(msg);
 
-    // 通过 BLE 发送
     ble.sendText(text, function(success, err) {
       if (!success) {
-        wx.showToast({ title: '发送失败', icon: 'none' });
-        console.error('[MSG] 发送失败:', err);
+        console.error('发送失败:', err);
       }
     });
   }
