@@ -1,0 +1,76 @@
+<!--pages/devices/devices.wxml-->
+<view class="container">
+  <!-- 我的设备 -->
+  <view class="section">
+    <text class="section-title">我的设备</text>
+    
+    <view class="card my-device" wx:if="{{myDevice}}">
+      <view class="device-main">
+        <view class="device-icon">
+          <image src="/assets/icons/device.png" mode="aspectFit"></image>
+        </view>
+        <view class="device-info">
+          <text class="device-name">{{myDevice.name}}</text>
+          <text class="device-id">{{myDevice.deviceId}}</text>
+        </view>
+        <view class="status-tag status-online">已连接</view>
+      </view>
+      
+      <view class="device-stats">
+        <view class="stat-item">
+          <text class="stat-value">-</text>
+          <text class="stat-label">电池</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">-</text>
+          <text class="stat-label">信号</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{nodes.length}}</text>
+          <text class="stat-label">邻居</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="card not-connected" wx:else>
+      <text class="not-connected-text">未连接设备</text>
+      <button class="btn-primary" bindtap="goToConnect">连接设备</button>
+    </view>
+  </view>
+
+  <!-- 邻居节点 -->
+  <view class="section" wx:if="{{connected}}">
+    <view class="section-header">
+      <text class="section-title">邻居节点 ({{nodes.length}})</text>
+      <button class="refresh-btn" bindtap="refreshNodes">刷新</button>
+    </view>
+    
+    <view class="node-list" wx:if="{{nodes.length > 0}}">
+      <view 
+        class="node-item" 
+        wx:for="{{nodes}}" 
+        wx:key="id"
+        data-node="{{item}}"
+        bindtap="viewNodeDetail">
+        
+        <view class="node-icon">
+          <text>{{item.shortName ? item.shortName[0] : '?'}}</text>
+        </view>
+        
+        <view class="node-info">
+          <text class="node-name">{{item.shortName || '未知节点'}}</text>
+          <text class="node-lastseen">{{item.lastHeard || '刚刚'}}</text>
+        </view>
+        
+        <view class="node-snr">
+          <text class="snr-value">{{item.snr || '-'}} dB</text>
+          <text class="snr-label">SNR</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="empty-state" wx:else>
+      <text class="empty-text">暂无邻居节点\n附近没有其他 Meshtastic 设备</text>
+    </view>
+  </view>
+</view>
