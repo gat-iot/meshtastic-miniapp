@@ -1,0 +1,92 @@
+<!--pages/channels/channels.wxml-->
+<view class="container">
+  <!-- 频道列表 -->
+  <view class="section">
+    <text class="section-title">频道配置</text>
+    
+    <view class="channel-list">
+      <view class="channel-item" wx:for="{{channels}}" wx:key="index">
+        <view class="channel-main">
+          <view class="channel-info">
+            <text class="channel-name">CH{{item.index}}: {{item.name}}</text>
+            <text class="channel-status">{{item.enabled ? '已启用' : '未启用'}}</text>
+          </view>
+          
+          <switch 
+            checked="{{item.enabled}}" 
+            data-index="{{index}}"
+            bindchange="toggleChannel"
+            color="#2196F3"
+          />
+        </view>
+        
+        <view class="channel-actions" wx:if="{{item.enabled}}">
+          <button 
+            class="action-btn" 
+            data-index="{{index}}"
+            bindtap="editChannel">
+            编辑
+          </button>
+          <button 
+            class="action-btn" 
+            data-index="{{index}}"
+            bindtap="shareChannel">
+            分享
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 说明 -->
+  <view class="card tips-card">
+    <text class="tips-title">频道说明</text>
+    <view class="tips-content">
+      <text>• LongFast: 远距离、低速率，适合远距离通信</text>
+      <text>• MediumFast: 中等距离和速率，平衡选择</text>
+      <text>• ShortTurbo: 短距离、高速率，适合密集网络</text>
+      <text>• 只有启用相同频道的设备才能互相通信</text>
+    </view>
+  </view>
+</view>
+
+<!-- 编辑弹窗 -->
+<view class="modal-mask" wx:if="{{showEditModal}}" bindtap="closeModal">
+  <view class="modal-content" catchtap="">
+    <view class="modal-header">
+      <text class="modal-title">编辑频道 CH{{editingChannel}}</text>
+      <text class="modal-close" bindtap="closeModal">×</text>
+    </view>
+    
+    <view class="modal-body">
+      <view class="form-item">
+        <text class="form-label">频道名称</text>
+        <input 
+          class="form-input" 
+          value="{{editForm.name}}"
+          data-field="name"
+          bindinput="onInputChange"
+          placeholder="输入频道名称"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">密钥 (Base64)</text>
+        <textarea 
+          class="form-textarea" 
+          value="{{editForm.psk}}"
+          data-field="psk"
+          bindinput="onInputChange"
+          placeholder="留空为公开频道"
+        />
+      </view>
+      
+      <button class="btn-secondary" bindtap="generateKey">生成随机密钥</button>
+    </view>
+    
+    <view class="modal-footer">
+      <button class="btn-secondary" bindtap="closeModal">取消</button>
+      <button class="btn-primary" bindtap="saveChannel">保存</button>
+    </view>
+  </view>
+</view>
