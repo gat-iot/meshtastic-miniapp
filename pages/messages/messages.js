@@ -1,12 +1,45 @@
 Page({
-  data: { messages: [], inputText: '', connected: false },
-  onShow() {
-    this.setData({ connected: !!getApp().globalData.deviceId });
+  data: {
+    messages: [],
+    inputText: '',
+    isConnected: false
   },
-  sendMessage() {
-    if (!this.data.inputText.trim() || !this.data.connected) return;
-    const msg = { id: Date.now(), type: 'sent', text: this.data.inputText, time: new Date().toLocaleTimeString() };
-    this.setData(prev => ({ messages: [...prev.messages, msg], inputText: '' }));
+
+  onShow: function() {
+    var app = getApp();
+    this.setData({
+      isConnected: !!app.globalData.deviceId && app.globalData.isConnected
+    });
+    console.log('消息页面 - 连接状态:', this.data.isConnected);
   },
-  onInput(e) { this.setData({ inputText: e.detail.value }); }
+
+  onInput: function(e) {
+    this.setData({ inputText: e.detail.value });
+  },
+
+  sendMessage: function() {
+    if (!this.data.inputText.trim()) {
+      wx.showToast({ title: '请输入消息', icon: 'none' });
+      return;
+    }
+
+    if (!this.data.isConnected) {
+      wx.showToast({ title: '请先连接设备', icon: 'none' });
+      return;
+    }
+
+    var msg = {
+      id: Date.now(),
+      type: 'sent',
+      text: this.data.inputText,
+      time: new Date().toLocaleTimeString()
+    };
+
+    this.setData({
+      messages: this.data.messages.concat(msg),
+      inputText: ''
+    });
+
+    wx.showToast({ title: '消息已发送', icon: 'success' });
+  }
 });
