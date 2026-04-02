@@ -14,64 +14,56 @@ Page({
       connected: ble.connected,
       deviceName: ble.nodeName || ''
     });
-    
-    // 启用通知
-    if (ble.connected) {
+    if (ble.connected && ble.fromRadioChar) {
       ble.enableNotify();
     }
   },
 
-  log: function(msg) {
-    console.log(msg);
-    this.setData({
-      debugLog: this.data.debugLog + msg + '\n'
-    });
+  addLog: function(msg) {
+    this.setData({ debugLog: this.data.debugLog + msg + '\n' });
   },
 
   scanDevices: function() {
     var that = this;
     that.setData({ scanning: true, devices: [], debugLog: '' });
-    that.log('开始扫描...');
+    that.addLog('开始扫描...');
 
     wx.openBluetoothAdapter({
       success: function() {
-        that.log('蓝牙初始化成功');
-        
+        that.addLog('蓝牙已开启');
+
         wx.startBluetoothDevicesDiscovery({
           allowDuplicatesKey: false,
           success: function() {
-            that.log('正在扫描设备...');
-            
+            that.addLog('扫描中...');
+
             setTimeout(function() {
               wx.getBluetoothDevices({
                 success: function(res) {
-                  that.log('发现 ' + res.devices.length + ' 个设备');
-                  that.setData({
-                    devices: res.devices,
-                    scanning: false
-                  });
+                  that.addLog('发现 ' + res.devices.length + ' 个设备');
+                  for (var i = 0; i < res.devices.length; i++) {
+                    var d = res.devices[i];
+                    that.addLog('  ' + (d.name || d.localName || '?') + ' RSSI:' + d.RSSI);
+                  }
+                  that.setData({ devices: res.devices, scanning: false });
                   wx.stopBluetoothDevicesDiscovery();
                 },
                 fail: function(err) {
-                  that.log('获取设备失败: ' + err.errMsg);
+                  that.addLog('获取设备失败');
                   that.setData({ scanning: false });
                 }
               });
             }, 8000);
           },
           fail: function(err) {
-            that.log('扫描失败: ' + err.errMsg);
+            that.addLog('扫描失败');
             that.setData({ scanning: false });
           }
         });
       },
-      fail: function(err) {
-        that.log('蓝牙初始化失败');
-        wx.showModal({
-          title: '错误',
-          content: '请开启手机蓝牙',
-          showCancel: false
-        });
+      fail: function() {
+        that.addLog('请开启蓝牙');
+        wx.showModal({ title: '提示', content: '请开启手机蓝牙', showCancel: false });
         that.setData({ scanning: false });
       }
     });
@@ -81,26 +73,21 @@ Page({
     var that = this;
     var deviceId = e.currentTarget.dataset.id;
     var device = this.data.devices.find(function(d) { return d.deviceId === deviceId; });
-    
+
     wx.stopBluetoothDevicesDiscovery();
     that.setData({ debugLog: '' });
-    that.log('连接设备: ' + (device.name || device.localName || deviceId));
-    
+    that.addLog('连接: ' + (device.name || device.localName || '?'));
+
     ble.connect(deviceId, function(success, err) {
       if (success) {
         ble.nodeName = device.name || device.localName || 'Meshtastic';
-        that.setData({
-          connected: true,
-          deviceName: ble.nodeName
-        });
-        that.log('连接成功!');
-        
-        // 启用通知
+        that.setData({ connected: true, deviceName: ble.nodeName });
+        that.addLog('连接成功!');
+
         ble.enableNotify();
-        
         wx.showToast({ title: '已连接', icon: 'success' });
       } else {
-        that.log('连接失败: ' + err);
+        that.addLog('失败: ' + (err || ''));
         wx.showToast({ title: '连接失败', icon: 'none' });
       }
     });
@@ -114,11 +101,7 @@ Page({
       success: function(res) {
         if (res.confirm) {
           ble.disconnect(function() {
-            that.setData({
-              connected: false,
-              deviceName: '',
-              debugLog: ''
-            });
+            that.setData({ connected: false, deviceName: '', debugLog: '' });
             wx.showToast({ title: '已断开', icon: 'success' });
           });
         }
