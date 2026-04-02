@@ -1,0 +1,12 @@
+/* pages/settings/settings.wxss */
+.section { margin-bottom: 30rpx; }
+.section-title { font-size: 28rpx; color: #666; margin-bottom: 20rpx; display: block; }
+.device-card { display: flex; align-items: center; justify-content: space-between; }
+.device-info { flex: 1; }
+.device-name { display: block; font-size: 32rpx; font-weight: 600; color: #333; margin-bottom: 8rpx; }
+.device-status { font-size: 24rpx; color: #4caf50; }
+.setting-list { background: #fff; border-radius: 16rpx; }
+.setting-item { display: flex; align-items: center; justify-content: space-between; padding: 28rpx 24rpx; border-bottom: 1rpx solid #f0f0f0; }
+.setting-item:last-child { border-bottom: none; }
+.setting-label { font-size: 30rpx; color: #333; }
+.setting-arrow { font-size: 36rpx; color: #ccc; }
