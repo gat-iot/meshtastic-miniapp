@@ -1,10 +1,38 @@
-<view class="container">
-  <view class="card">
-    <text style="font-size: 32rpx; font-weight: bold;">{{connected ? deviceName : '未连接设备'}}</text>
-    <text style="font-size: 24rpx; color: {{connected ? '#4caf50' : '#999'}}; margin-top: 10rpx;">{{connected ? '已连接' : '未连接'}}</text>
+<view style="padding: 20rpx; background: #f5f5f5; min-height: 100vh;">
+  <!-- 设备信息卡片 -->
+  <view style="background: #fff; border-radius: 16rpx; padding: 30rpx; margin-bottom: 20rpx;">
+    <view style="display: flex; align-items: center; margin-bottom: 20rpx;">
+      <view style="width: 80rpx; height: 80rpx; background: #e3f2fd; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 20rpx;">
+        <text style="font-size: 40rpx;">📻</text>
+      </view>
+      <view style="flex: 1;">
+        <text style="font-size: 32rpx; font-weight: bold; color: #333; display: block;">{{isConnected ? deviceName : '未连接设备'}}</text>
+        <text style="font-size: 24rpx; color: {{isConnected ? '#4caf50' : '#999'}}; margin-top: 8rpx; display: block;">{{isConnected ? '已连接' : '未连接'}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{isConnected}}" style="border-top: 1rpx solid #f0f0f0; padding-top: 20rpx;">
+      <view style="display: flex; justify-content: space-between; margin-bottom: 16rpx;">
+        <text style="font-size: 26rpx; color: #666;">设备 ID</text>
+        <text style="font-size: 26rpx; color: #333;">{{deviceId}}</text>
+      </view>
+      <view style="display: flex; justify-content: space-between;">
+        <text style="font-size: 26rpx; color: #666;">信号强度</text>
+        <text style="font-size: 26rpx; color: #333;">{{rssi}} dBm</text>
+      </view>
+    </view>
+
+    <navigator wx:if="{{!isConnected}}" url="/pages/index/index" open-type="switchTab">
+      <button style="margin-top: 20rpx; background: #2196F3; color: #fff; border-radius: 12rpx; padding: 20rpx;">
+        去连接设备
+      </button>
+    </navigator>
   </view>
-  <view class="card" style="margin-top: 20rpx;">
-    <text style="font-size: 28rpx; color: #666;">邻居节点</text>
-    <text style="font-size: 24rpx; color: #999; margin-top: 20rpx;">暂无邻居节点</text>
+
+  <!-- 邻居节点 -->
+  <view style="background: #fff; border-radius: 16rpx; padding: 30rpx;">
+    <text style="font-size: 30rpx; font-weight: bold; color: #333; display: block; margin-bottom: 20rpx;">邻居节点</text>
+    <text wx:if="{{!isConnected}}" style="font-size: 26rpx; color: #999;">请先连接设备</text>
+    <text wx:if="{{isConnected}}" style="font-size: 26rpx; color: #999;">暂无邻居节点</text>
   </view>
 </view>
