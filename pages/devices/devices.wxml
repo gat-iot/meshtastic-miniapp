@@ -1,0 +1,10 @@
+<view class="container">
+  <view class="card">
+    <text style="font-size: 32rpx; font-weight: bold;">{{connected ? deviceName : '未连接设备'}}</text>
+    <text style="font-size: 24rpx; color: {{connected ? '#4caf50' : '#999'}}; margin-top: 10rpx;">{{connected ? '已连接' : '未连接'}}</text>
+  </view>
+  <view class="card" style="margin-top: 20rpx;">
+    <text style="font-size: 28rpx; color: #666;">邻居节点</text>
+    <text style="font-size: 24rpx; color: #999; margin-top: 20rpx;">暂无邻居节点</text>
+  </view>
+</view>
