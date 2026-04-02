@@ -1,0 +1,24 @@
+<view class="container">
+  <view class="card" style="background: linear-gradient(135deg, #2196F3, #1976D2); color: #fff;">
+    <text style="font-size: 36rpx; font-weight: bold;">{{connectedDevice ? connectedDevice.name : '未连接设备'}}</text>
+    <text style="font-size: 26rpx; opacity: 0.9; margin-top: 10rpx;">{{connectedDevice ? '已连接' : '未连接'}}</text>
+    <view style="margin-top: 30rpx;">
+      <button wx:if="{{!connectedDevice}}" class="btn-primary" style="background: #fff; color: #2196F3;" bindtap="scanDevices" disabled="{{scanning}}">{{scanning ? '扫描中...' : '扫描设备'}}</button>
+      <button wx:if="{{connectedDevice}}" class="btn-danger" style="background: rgba(255,255,255,0.2); color: #fff; border: none;" bindtap="disconnect">断开连接</button>
+    </view>
+  </view>
+
+  <view wx:if="{{devices.length > 0 && !connectedDevice}}" style="margin-top: 30rpx;">
+    <text style="font-size: 28rpx; color: #666;">发现的设备 ({{devices.length}})</text>
+    <view style="background: #fff; border-radius: 16rpx; margin-top: 20rpx;">
+      <view wx:for="{{devices}}" wx:key="deviceId" style="padding: 24rpx; border-bottom: 1rpx solid #f0f0f0;" data-id="{{item.deviceId}}" bindtap="connectDevice">
+        <text style="font-size: 32rpx; font-weight: 500;">{{item.name || item.localName || 'Meshtastic 设备'}}</text>
+        <text style="font-size: 24rpx; color: #999; margin-left: 20rpx;">{{item.deviceId}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{devices.length === 0 && !scanning && !connectedDevice}}" style="text-align: center; padding: 100rpx; color: #999;">
+    <text>点击"扫描设备"搜索附近的 Meshtastic 设备</text>
+  </view>
+</view>
