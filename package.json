@@ -1,0 +1,12 @@
+{
+  "description": "Meshtastic 微信小程序",
+  "packagerManager": "npm",
+  "miniprogramRoot": "miniprogram/",
+  "scripts": {
+    "compile": "echo 'Use WeChat DevTools to compile'"
+  },
+  "dependencies": {
+    "protobufjs": "^7.2.6"
+  },
+  "devDependencies": {}
+}
