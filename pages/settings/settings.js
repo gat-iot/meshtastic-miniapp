@@ -46,7 +46,7 @@ Page({
   showAbout: function() {
     wx.showModal({
       title: '关于',
-      content: 'Meshtastic 微信小程序\n版本: 1.0.0\n\n离网通信客户端\n支持 BLE 连接 Meshtastic 设备',
+      content: 'Meshtastic 微信小程序\n版本: 1.0.0',
       showCancel: false
     });
   }
